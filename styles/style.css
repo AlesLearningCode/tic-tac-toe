@@ -1,0 +1,24 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+.game > div{
+    border: black 3px solid;
+    height: 100px;
+    width: 100px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    font-size: 4rem;
+}
+.game{
+    display: grid;
+    grid-template-rows: repeat(3,1fr);
+    grid-template-columns: repeat(3,100px);
+    margin-top: 100px;
+}
+body{
+    display: flex;
+    justify-content: center;
+}
