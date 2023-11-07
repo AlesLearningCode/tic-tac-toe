@@ -1,87 +1,88 @@
-let Gameboard = {
-    gameboard: [],
-    counts:{},
-    init: function(){  
-        this.render()
-        this.playerMark()
-    },
-    render: function (){
-        const board = document.querySelector(`.game`)
+let gameboard = (function(){
+    let gameboard = []
+    const board = document.querySelector(`.game`)
+    const endScore = document.querySelector(`.endScore`)
+    const createBtn = document.querySelector(`.createPlayer`)
+    let playerOne
+    let playerTwo
+    render()
+    playerMark()
+    function render(){
         for(let i = 0; i < 9; i++){
-            divs = document.createElement(`div`)
-            divs.classList.add(`square`)
-            divs.setAttribute(`number`, `${[i]}`)
-            board.appendChild(divs)
+        divs = document.createElement(`div`)
+        divs.classList.add(`square`)
+        divs.setAttribute(`number`, `${[i]}`)
+        board.appendChild(divs)
         }
-    },
-    playerMark: function(){
-        const board = document.querySelector(`.game`)
-        const endScore = document.querySelector(`.endScore`)
+    };
+    function playerMark(playerOne){
         const squares = document.querySelectorAll(`.square`)
+        function createPlayer(name){
+            return {name}
+        }
+        createBtn.addEventListener( `click`, () =>{
+            const playerName = document.getElementById(`playerOne`).value
+            const playerNameTwo = document.getElementById(`playerTwo`).value
+            const playerTextOne = document.querySelector(`.playerOne`)
+            const playerTextTwo = document.querySelector(`.playerTwo`)
+            playerOne = createPlayer(`${playerName}`)
+            playerTwo = createPlayer(`${playerNameTwo}`)
+            playerTextOne.textContent = playerOne.name
+            playerTextTwo.textContent = playerTwo.name
+            console.log(playerOne.name)
+            })
         squares.forEach(square => {
             square.addEventListener(`click`, () =>{
                 // searches for how many occurences of each sign is in array
-                const occurrences = this.gameboard.reduce(function (acc, curr) {
+                const occurrences = gameboard.reduce(function (acc, curr) {
                     return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
                   }, {});
                 // input of player marks onto gameboard
-                if(this.gameboard.length === 0){
-                endScore.textContent = " "
-                this.gameboard[square.getAttribute(`number`)] = 1
+                if(gameboard.length === 0){
+                gameboard[square.getAttribute(`number`)] = 1
                 square.innerHTML = `X`
                 }else if((occurrences[1] > occurrences[2] || occurrences[2] == undefined) && 
                 square.textContent == ""){
                 square.innerHTML = `O`
-                this.gameboard[square.getAttribute(`number`)] = 2
+                gameboard[square.getAttribute(`number`)] = 2
                 }else if(occurrences[2] === occurrences[1] && 
                 square.textContent == ""){
                 square.innerHTML = `X`
-                this.gameboard[square.getAttribute(`number`)] = 1
+                gameboard[square.getAttribute(`number`)] = 1
                 }else if(occurrences[1] + occurrences[2] == 9){
-                this.gameboard.splice(0, 9)
-                board.innerHTML = ""
-                this.init()
+                gameboard.splice(0, 9)
                 }
                 //Checks for logic of the game and decides winner 
-                if((this.gameboard[0] == 1 && this.gameboard[1] == 1 && this.gameboard[2] == 1) || 
-                (this.gameboard[0] == 2 && this.gameboard[1] == 2 && this.gameboard[2] == 2) ||
-                (this.gameboard[3] == 1 && this.gameboard[4] == 1 && this.gameboard[5] == 1) || 
-                (this.gameboard[3] == 2 && this.gameboard[4] == 2 && this.gameboard[5] == 2) ||
-                (this.gameboard[6] == 1 && this.gameboard[7] == 1 && this.gameboard[8] == 1) || 
-                (this.gameboard[6] == 2 && this.gameboard[7] == 2 && this.gameboard[8] == 2)){
+                if((gameboard[0] == gameboard[1] && gameboard[2] == gameboard[1] && gameboard[0] != undefined) || 
+                (gameboard[3] == gameboard[4] && gameboard[5] == gameboard[4] && gameboard[3] != undefined) || 
+                (gameboard[6] == gameboard[7] && gameboard[8] == gameboard[7] && gameboard[6] != undefined)){
+                endScore.textContent = `${playerOne.name}wins`
+                gameboard.splice(0, 9)
+                }else if((gameboard[0] == gameboard[3] && gameboard[3] == gameboard[6] && gameboard[0] != undefined) || 
+                (gameboard[1] == gameboard[4]  && gameboard[4] == gameboard[7] && gameboard[1] != undefined) || 
+                (gameboard[2] == gameboard[5] && gameboard[5] == gameboard[8] && gameboard[2] != undefined)){
                 endScore.textContent = `You win`
-                this.gameboard.splice(0, 9)
-                board.innerHTML = ""
-                this.init()
-                }else if((this.gameboard[0] == 1 && this.gameboard[3] == 1 && this.gameboard[6] == 1) || 
-                (this.gameboard[0] == 2 && this.gameboard[3] == 2 && this.gameboard[6] == 2) ||
-                (this.gameboard[1] == 1 && this.gameboard[4] == 1 && this.gameboard[7] == 1) || 
-                (this.gameboard[1] == 2 && this.gameboard[4] == 2 && this.gameboard[7] == 2) ||
-                (this.gameboard[2] == 1 && this.gameboard[5] == 1 && this.gameboard[8] == 1) || 
-                (this.gameboard[2] == 2 && this.gameboard[5] == 2 && this.gameboard[8] == 2)){
+                gameboard.splice(0, 9)
+                }else if((gameboard[0] == gameboard[4] && gameboard[4] == gameboard[8] && gameboard[0] != undefined) || 
+                (gameboard[2] == gameboard[4]  && gameboard[4] == gameboard[6] && gameboard[2] != undefined)){
                 endScore.textContent = `You win`
-                this.gameboard.splice(0, 9)
-                board.innerHTML = ""
-                this.init()
-                }else if((this.gameboard[0] == 1 && this.gameboard[4] == 1 && this.gameboard[8] == 1) || 
-                (this.gameboard[0] == 2 && this.gameboard[4] == 2 && this.gameboard[8] == 2) ||
-                (this.gameboard[2] == 1 && this.gameboard[4] == 1 && this.gameboard[6] == 1) || 
-                (this.gameboard[2] == 2 && this.gameboard[4] == 2 && this.gameboard[6] == 2)){
-                endScore.textContent = `You win`
-                this.gameboard.splice(0, 9)
-                board.innerHTML = ""
-                this.init()
+                gameboard.splice(0, 9)
                 }else if(occurrences[1] + occurrences[2] == 8){
                 endScore.textContent = `It's a draw`
-                this.gameboard.splice(0, 9)
-                board.innerHTML = ""
-                this.init()
+                gameboard.splice(0, 9)
                 }
             })
         });
-    },
-    arrayLastIndex: function(value){
-        return this.gameboard[this.gameboard.length - value]
-    },
-}
-Gameboard.init()
+    };
+    restartnGame = (function(){
+        const restartBtn = document.querySelector(`.restart`)
+        restartBtn.addEventListener(`click`, () =>{
+            const endScore = document.querySelector(`.endScore`)
+            board.innerHTML = ""
+            endScore.textContent = ""
+            gameboard.splice(0, 9)
+            render()
+            playerMark()
+    });
+    })();
+})();
